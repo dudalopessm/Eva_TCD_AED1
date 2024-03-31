@@ -13,19 +13,19 @@ struct pratos {
     float preco;
 };
 
-ListaP *criarP(); //feito
+ListaP *criarP();
 
-int inserirPrato(ListaP *l, Pratos it); //feito
-int removerPrato(ListaP *l, Pratos it); //feito
+int inserirPrato(ListaP *l, Pratos it);
+int removerPrato(ListaP *l, Pratos it);
 
-int listaVaziaP(ListaP *l); //feito
+int listaVaziaP(ListaP *l);
 
 int alteraPrato(ListaP *l, Pratos it);
-int buscaItemPrato(ListaP *l, int cod); //feito
-int buscaPrato(ListaP *l, int cod, Pratos *it); //feito
-int tamanhoP(ListaP *l); //feito
+int buscaItemPrato(ListaP *l, int cod);
+int buscaPrato(ListaP *l, int cod, Pratos *it);
+int tamanhoP(ListaP *l);
 
-void mostrarPratos(ListaP *l); //feito
+void mostrarPratos(ListaP *l);
 
-void liberarmemoriaP(ListaP *l); //feito
+void liberarmemoriaP(ListaP *l);
 #endif //EVA00_PRATOS_H

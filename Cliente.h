@@ -7,31 +7,30 @@
 typedef struct noC* ListaC;
 typedef struct cliente Cliente;
 struct cliente {
-    char cpf[12];
+    char cpf[15];
     char nome[30];
     char email[30];
-    int senha;
+    char senha[10];
     ListaP *carrinho;
 };
 
-ListaC *criarCliente(); //feito
+ListaC *criarCliente();
 
-int inserirCliente(ListaC *l, Cliente cli); //feito
+int inserirCliente(ListaC *l, Cliente cli);
 
-int removerInicioC(ListaC *l); //feito
-int removerCliente(ListaC *l, Cliente cli); //feito
-int removerPosicaoC (ListaC *l, int pos); //feito
+int removerInicioC(ListaC *l);
+int removerCliente(ListaC *l, Cliente cli);
+int removerPosicaoC (ListaC *l, int pos);
 
-int buscaEmailCliente(ListaC *l, char *em); //feito
-int buscaCliente(ListaC *l, char *em, Cliente *cli); //feito
-int procuraCliente(ListaC *l, char *aux); //feito
+int buscaEmailCliente(ListaC *l, char *em);
+int buscaCliente(ListaC *l, char *em, Cliente *cli);
+int procuraCliente(ListaC *l, char *aux);
 
-int listaVaziaC(ListaC *l); //feito
+int listaVaziaC(ListaC *l);
 
-void mostrarC(ListaC *l); //feito
+void mostrarC(ListaC *l);
 
-void liberarmemoriaC(ListaC *l); //feito
+void liberarmemoriaC(ListaC *l);
 
-
-int tamanhoC (ListaC *l); //feito
+int tamanhoC (ListaC *l);
 #endif //EVA00_CLIENTE_H

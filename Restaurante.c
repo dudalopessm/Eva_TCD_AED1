@@ -119,6 +119,21 @@ int achaRest(ListaR *l, int id, Restaurante *rest) {
     return 0;
 }
 
+int achaRestId(ListaR *l, int id) {
+    if (l == NULL) return 2;
+    if (listaVaziaR(l) == 0) return 4;
+    NoR *no = (*l);
+    if (no == NULL) return 3;
+    while (no != NULL) {
+        if (no->item.identificacao != id) {
+            no = no->prox;
+        } else {
+            return 0;
+        }
+    }
+    return 1;
+}
+
 int listaVaziaR(ListaR *l) {
     if (l == NULL) return 2;
     if ((*l) == NULL) return 0;

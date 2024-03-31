@@ -81,8 +81,16 @@ void Restaurantes(char *auxcat) {
     } while(op > 1 && op < 10);
 }
 
-int ConfirmaSenha(int senha1) { //TERMINAR FUNCAO DE CONFIRMACAO DE SENHA -> MUDAR SENHA PARA CHAR?
-    return 0;
+int ConfirmaSenha(char *s) {
+    int i = 0, num = 0, tam = 0;
+    for (i = 0; s[i] != '\0'; i++) {
+        if (s[i] >= '1' && s[i] <= '9') {
+            num++;
+        }
+        tam++;
+    }
+    if (num && tam >= 8) return 0;
+    return 1;
 }
 
 int ConfirmaEmail(char *email) { //confirma se email tem @ e já existe na lista
@@ -99,19 +107,32 @@ int ConfirmaEmail(char *email) { //confirma se email tem @ e já existe na lista
     return 0;
 }
 
-int confirmaCPF(char *cpf) {
+int ConfirmaCPF(char *cpf) {
     int i, tam = 0;
     for (i = 0; cpf[i] != '\0'; i++) {
         tam++;
     }
-    if(tam<11) return -1;
+    if (cpf[11] != '-') return 1;
+    if (cpf[3] != '.' || cpf[7] != '.') return 1;
+    if(tam<14) return 1;
+    return 0;
+}
+
+int ConfirmaCNPJ(char *cnpj) {
+    int i, tam = 0;
+    for (i = 0; cnpj[i] != '\0'; i++) {
+        tam++;
+    }
+    if (tam!= 17) return 1;
+    if (cnpj[2] != '.' || cnpj[6] != '.') return 1;
+    if (cnpj[10] != '/') return 1;
     return 0;
 }
 
 int main () {
     int menuprincp, menucli1, menucli2, menurest1, menurest2;
-    int controle, senhaaux, opcli, cod;
-    char auxcat[30];
+    int controle, opcli, cod;
+    char auxcat[30], auxsenha[10];
     ListaC *lCli;
     ListaR *lRest;
     ListaP *lPrat;
@@ -165,11 +186,13 @@ int main () {
                             buscaCliente(lCli, c1.email, &c1);
                             do {
                                 printf("\nSenha: ");
-                                scanf("%d", &senhaaux);
-                                controle = ConfirmaSenha(senhaaux);
+                                setbuf(stdin, NULL);
+                                fgets(auxsenha, 9, stdin);
+                                auxsenha[strcspn(auxsenha, "\n")] = '\0';
+                                controle = ConfirmaSenha(auxsenha);
                                 if(controle){
-                                    printf("\nDeu errado.");
-                                } else if (senhaaux != c1.senha) {
+                                    printf("\nSenha invalida. Tente novamente.");
+                                } else if (strcmp(auxsenha, c1.senha)) {
                                     printf("\nSenha incorreta, digite novamente.");
                                     controle = 1;
                                 }
@@ -179,8 +202,8 @@ int main () {
                                 printf("\n\n-------- %s, bem vindo(a) --------", c1.nome);
                                 printf("\n0. Retornar");
                                 printf("\n1. Opcoes de restaurantes");
-                                printf("\n2. Historico de pedidos");
-                                printf("\n3. Feedbacks");
+                                printf("\n2. Historico de pedidos"); //FAZER QUANDO FILA DE PEDIDOS ESTIVER PRONTA
+                                printf("\n3. Feedbacks"); //fazer com os meninos
                                 printf("\n4. Excluir conta");
                                 Opcao();
                                 scanf("%d", &menucli2);
@@ -262,13 +285,13 @@ int main () {
                                         scanf("%d", &opcli);
                                         while (opcli) {
                                             printf("\nSenha necessaria para delecao de conta, digite-a: ");
-                                            scanf("%d", &senhaaux);
-                                            controle = ConfirmaSenha(senhaaux);
-                                            if (controle == 0) {
+                                            fgets(auxsenha, 9, stdin);
+                                            auxsenha[strcspn(auxsenha, "\n")] = '\0';
+                                            if (strcmp(auxsenha, c1.senha) == 0) {
                                                 controle = removerCliente(lCli, c1);
                                                 if (controle) {
                                                     system("cls");
-                                                    printf("\nErro na delecao.");
+                                                    printf("\nErro na exclusao da conta.");
                                                 } else {
                                                     opcli = 0;
                                                     menucli2 = 0;
@@ -276,12 +299,13 @@ int main () {
                                                     printf("\nConta excluida.");
                                                 }
                                             } else {
-                                                printf("\nSenha incorreta.");
+                                                system("cls");
+                                                printf("\nSenha incorreta. Tente novamente.");
                                             }
                                         }
                                         break;
                                     default:
-                                        printf("\nOpcao invalida, digite novamente.");
+                                        printf("\nOpcao invalida. Tente novamente.");
                                 }
                             } while(menucli2);
                             break;
@@ -295,10 +319,11 @@ int main () {
                             fgets(c1.nome, 50, stdin);
                             c1.nome[strcspn(c1.nome, "\n")] = '\0';
                             do {
+                                printf("\nFormato do CPF: XXX.XXX.XXX-XX");
                                 printf("\nDigite seu CPF: ");
                                 setbuf(stdin, NULL);
                                 fgets(c1.cpf, 12, stdin);
-                                controle = confirmaCPF(c1.cpf);
+                                controle = ConfirmaCPF(c1.cpf);
                                 if (controle) {
                                     printf("\nCPF invalido, tente novamente.");
                                 } else if (procuraCliente(lCli, c1.cpf) == 0) {
@@ -318,11 +343,12 @@ int main () {
                                 }
                             } while(controle);
                             do {
-                                printf("\nCrie uma senha apenas com numeros: ");
-                                scanf("%d", &c1.senha);
+                                printf("\nCrie uma senha com numeros e letras de 8 caracteres: ");
+                                fgets(c1.senha, 9, stdin);
+                                c1.senha[strcspn(c1.senha, "\n")] = '\0';
                                 controle = ConfirmaSenha(c1.senha);
                                 if (controle) {
-                                    printf("\nSenha invalida, tente novamente.");
+                                    printf("\nSenha invalida. Tente novamente.");
                                 }
                             } while(controle);
                             controle = inserirCliente(lCli, c1);
@@ -367,11 +393,12 @@ int main () {
                             buscaRest(lRest, r1.email, &r1);
                             do {
                                 printf("\nInsira a senha: ");
-                                scanf("%d", &senhaaux);
-                                controle = ConfirmaSenha(senhaaux);
+                                fgets(auxsenha, 9, stdin);
+                                auxsenha[strcspn(auxsenha, "\n")] = '\0';
+                                controle = ConfirmaSenha(auxsenha);
                                 if (controle) {
                                     printf("\nSenha invalida. Tente novamente.");
-                                } else if (senhaaux != r1.senha) {
+                                } else if (strcmp(auxsenha, r1.senha) != 0) {
                                     printf("\nSenha incorreta. Tente novamente.");
                                     controle = 1;
                                 }
@@ -380,13 +407,13 @@ int main () {
                             //inicio da funcionalidade com restaurante logado
                             do { //menu de funcionalidades
                                 printf("\n\n-------- %s, bem vindo(a) --------", r1.nomeRest);
-                                printf("\n0. Retornar"); //feito
-                                printf("\n1. Ver meu cardapio"); //feito
-                                printf("\n2. Pedidos em minha loja");
-                                printf("\n3. Cadastrar prato"); //feito
-                                printf("\n4. Alteracao de prato"); //feito
-                                printf("\n5. Excluir prato"); //feito
-                                printf("\n6. Feedbacks da minha loja");
+                                printf("\n0. Retornar");
+                                printf("\n1. Ver meu cardapio");
+                                printf("\n2. Pedidos em minha loja"); //FAZER QUANDO EU FIZER A FILA DE PEDIDOS
+                                printf("\n3. Cadastrar prato");
+                                printf("\n4. Alteracao de prato");
+                                printf("\n5. Excluir prato");
+                                printf("\n6. Feedbacks da minha loja"); //fazer em conjunto c meninos
                                 printf("\n7. Excluir conta");
                                 Opcao();
                                 scanf("%d", &menurest2);
@@ -564,8 +591,9 @@ int main () {
                                         scanf("%d", &opcli);
                                         while (opcli) {
                                             printf("\nSenha necessaria para exclusao. Digite-a: ");
-                                            scanf("%d", &senhaaux);
-                                            if (senhaaux == r1.senha) {
+                                            fgets(auxsenha, 9, stdin);
+                                            auxsenha[strcspn(auxsenha, "\n")] = '\0';
+                                            if (strcmp(auxsenha, r1.senha) == 0) {
                                                 controle = removerRest(lRest, r1);
                                                 if (controle) {
                                                     system("cls");
@@ -588,13 +616,77 @@ int main () {
                             } while(menurest2);
                             break; //fim das funcionalidades com restaurante logado
                         case 2: //registro do restaurante
-                            printf("\n");
+                            printf("\n-------- Registro de restaurante --------");
+                            printf("\nNome do restaurante: ");
+                            setbuf(stdin, NULL);
+                            fgets(r1.nomeRest, 30, stdin);
+                            r1.nomeRest[strcspn(r1.nomeRest, "\n")] = '\0';
+                            do{
+                                printf("\nFormato de digitacao do CNPJ: XX.XXX.XXX/XXXX-XX");
+                                printf("\nCNPJ do restaurante: ");
+                                setbuf(stdin, NULL);
+                                fgets(r1.CNPJ, 18, stdin);
+                                controle = ConfirmaCNPJ(r1.CNPJ);
+                                if (controle) {
+                                    printf("\nCNPJ no formato invalido. Tente novamente.");
+                                } else if (buscaItemRest(lRest, r1.CNPJ) == 0) {
+                                    controle = 1;
+                                    printf("\nCNPJ ja existente. Tente novamente.");
+                                }
+                            } while(controle);
+                            do {
+                                printf("\nEmail: ");
+                                setbuf(stdin, NULL);
+                                fgets(r1.email, 30, stdin);
+                                controle = ConfirmaEmail(r1.email);
+                                r1.email[strcspn(r1.email, "\n")] = '\0';
+                                if (controle) {
+                                    printf("\nEmail invalido. Tente novamente.");
+                                } else if (buscaEmailRest(lRest, r1.email)) {
+                                    controle = 1;
+                                    printf("\nEmail ja existente. Tente novamente.");
+                                }
+                            } while(controle);
+                            do {
+                                printf("\nIdentificacao: ");
+                                scanf("%d", &r1.identificacao);
+                                controle = achaRestId(lRest, r1.identificacao);
+                                if (controle) {
+                                    printf("\nIdentificacao invalida. Tente novamente.");
+                                } else if(controle == 0) {
+                                    controle = 1;
+                                    printf("\nIdentificacao ja pertence a outro restaurante. Tente novamente.");
+                                }
+                            } while(controle);
+                            do {
+                                printf("\nCrie uma senha com letras e numeros de 8 caracteres: ");
+                                setbuf(stdin, NULL);
+                                fgets(r1.senha, 9, stdin);
+                                controle = ConfirmaSenha(r1.senha);
+                                if (controle) {
+                                    printf("\nSenha invalida. Tente novamente.");
+                                }
+                            } while(controle);
+                            Restaurantes(auxcat);
+                            strcpy(r1.categoria, auxcat);
+                            controle = inserirRest(lRest, r1);
+                            system("cls");
+                            if (controle == 0) {
+                                printf("\nRestaurante cadastrado.");
+                            } else {
+                                printf("\nErro ao inserir restaurante.");
+                            }
+                            break;
+                        default:
+                            printf("\nOpcao invalida. Tente novamente.");
                     }
                 } while(menurest1);
+                break;
+            default:
+                printf("\nOpcao invalida. Tente novamente.");
         }
     } while (menuprincp);
-    printf("\n\n");
+    //fim do programa
     system("pause");
-    //colocar case default no switch?
     return 0;
 }

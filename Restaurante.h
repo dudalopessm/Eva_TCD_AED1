@@ -11,29 +11,31 @@ typedef struct restaurante{
     char categoria[30];
     char CNPJ[19];
     char email[30];
-    int senha;
-    int identificacao; //pedir pro usuario registrar esse numero no registro do restaurante
+    char feedback[100]; //cliente registra em um restaurante
+    char senha[10];
+    int identificacao;
     ListaP *cardapio;
     FilaPed *pedidos;
 }Restaurante;
 
-ListaR *criarRest(); //feito
+ListaR *criarRest();
 
-int inserirRest(ListaR *l, Restaurante rest); //feito
+int inserirRest(ListaR *l, Restaurante rest);
 
-int removerRest(ListaR *l, Restaurante rest); //feito
+int removerRest(ListaR *l, Restaurante rest);
 
-int buscaEmailRest(ListaR *l, char *em); //feito
-int buscaItemRest(ListaR *l, char *it); //feito
-int buscaRest(ListaR *l, char *aux, Restaurante *rest); //feito
-int achaRest(ListaR *l, int id, Restaurante *rest); //feito
+int buscaEmailRest(ListaR *l, char *em);
+int buscaItemRest(ListaR *l, char *it);
+int buscaRest(ListaR *l, char *aux, Restaurante *rest);
+int achaRest(ListaR *l, int id, Restaurante *rest);
+int achaRestId(ListaR *l, int id);
 
-int listaVaziaR(ListaR *l); //feito
+int listaVaziaR(ListaR *l);
 
-void mostrarR(ListaR *l, char *cat); //feito
-void mostrarPratosRest(ListaR *l); //feito
+void mostrarR(ListaR *l, char *cat);
+void mostrarPratosRest(ListaR *l);
 
-void liberarmemoriaR(ListaR *l); //feito
+void liberarmemoriaR(ListaR *l);
 
-int tamanhoR (ListaR *l); //feito
+int tamanhoR (ListaR *l);
 #endif //EVA00_RESTAURANTE_H
