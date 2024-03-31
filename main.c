@@ -28,6 +28,59 @@ void Opcao() { //sempre que for pedir opcao
     printf("\nDigite a opcao desejada: ");
 }
 
+void Restaurantes(char *auxcat) {
+    int op;
+    do {
+        Opcao();
+        printf("\n1. Comida japonesa");
+        printf("\n2. Comida brasileira");
+        printf("\n3. Pizzas");
+        printf("\n4. Hamburgueres");
+        printf("\n5. Vegetarianos");
+        printf("\n6. Comida arabe");
+        printf("\n7. Doces e bolos");
+        printf("\n8. Comida italiana");
+        printf("\n9. Padaria");
+        printf("\n10. Nenhuma listada");
+        Opcao();
+        scanf("%d", &op);
+        switch (op) {
+            case 1:
+                strcpy(auxcat, "Comida japonesa");
+                break;
+            case 2:
+                strcpy(auxcat, "Comida brasileira");
+                break;
+            case 3:
+                strcpy(auxcat, "Pizzas");
+                break;
+            case 4:
+                strcpy(auxcat, "Hamburgueres");
+                break;
+            case 5:
+                strcpy(auxcat, "Vegetarianos");
+                break;
+            case 6:
+                strcpy(auxcat, "Comida arabe");
+                break;
+            case 7:
+                strcpy(auxcat, "Doces e bolos");
+                break;
+            case 8:
+                strcpy(auxcat, "Comida italiana");
+                break;
+            case 9:
+                strcpy(auxcat, "Padaria");
+                break;
+            case 10:
+                strcpy(auxcat, "Nenhuma listada");
+                break;
+            default:
+                printf("\nOpcao invalida! Digite alguma valida.");
+        }
+    } while(op > 1 && op < 10);
+}
+
 int ConfirmaSenha(int senha1) { //TERMINAR FUNCAO DE CONFIRMACAO DE SENHA -> MUDAR SENHA PARA CHAR?
     return 0;
 }
@@ -55,13 +108,19 @@ int confirmaCPF(char *cpf) {
     return 0;
 }
 
-
 int main () {
     int menuprincp, menucli1, menucli2, menurest1, menurest2;
-    int controle, senhaaux;
+    int controle, senhaaux, opcli;
+    char auxcat[30], auxnomerest[30];
     ListaC *lCli;
+    ListaR *lRest;
+    ListaP *lPrat;
     lCli = criarCliente();
+    lRest = criarRest();
+    lPrat = criarP();
     Cliente c1;
+    Restaurante r1;
+    Pratos p1;
     do
     {
         //inicio do programa
@@ -71,10 +130,11 @@ int main () {
         system("cls");
         switch (menuprincp)
         {
-            case 0: //caso cliente queira sair
+            case 0: //caso usuario queira sair
                 system("cls");
                 Fim();
                 liberarmemoriaC(lCli);
+                liberarmemoriaR(lRest);
                 break;
             case 1: //parte do cliente
                 do {
@@ -82,13 +142,13 @@ int main () {
                     printf("\n1. Login");
                     printf("\n2. Cadastre-se");
                     printf("\n0. Retornar");
-                    printf("\nDigite sua opcao abaixo: ");
+                    Opcao();
                     scanf("%d", &menucli1);
                     system("cls");
                     switch (menucli1) {
-                        case 0:
+                        case 0: //saida do menu do cliente
                             break;
-                        case 1:
+                        case 1: //tela de login do cliente
                             do {
                                 printf("\nInsira seu email:");
                                 setbuf(stdin, NULL);
@@ -114,13 +174,119 @@ int main () {
                                     controle = 1;
                                 }
                             }while(controle);
-                            do { //funcionalidade pro cliente mexer
+                            do { //inicio da funcionalidade com o cliente logado
                                 system("cls");
-                                printf("\n\nBem vindo(a), %s", c1.nome);
-                                printf("\nDigite sua opcao: ");
+                                printf("\n\n-------- %s, bem vindo(a) --------", c1.nome);
+                                printf("\n0. Retornar");
+                                printf("\n1. Opcoes de restaurantes");
+                                printf("\n2. Historico de pedidos");
+                                printf("\n3. Feedbacks");
+                                printf("\n4. Excluir conta");
+                                Opcao();
                                 scanf("%d", &menucli2);
+                                system("cls");
+                                switch (menucli2) {
+                                    case 0: break;
+                                    case 1: //mostra restaurantes
+                                    do {
+                                        Restaurantes(auxcat);
+                                        system("cls");
+                                        printf("\n-------- Restaurantes disponiveis --------");
+                                        mostrarR(lRest, auxcat);
+                                        printf("\nDeseja olhar o cardapio de algum restaurante?");
+                                        printf("\n0. Não, desejo retornar ");
+                                        printf("\n1. Sim, quero olhar");
+                                        Opcao();
+                                        scanf("%d", &opcli);
+                                        switch (opcli) {
+                                            case 0:
+                                                break;
+                                            case 1:
+                                                printf("\nDigite o numero da identificacao do restaurante: ");
+                                                scanf("%d", &opcli);
+                                                controle = achaRest(lRest, opcli, &r1);
+                                                if (controle) {
+                                                    printf("\nCodigo incorreto, digite novamente.");
+                                                    opcli = 2;
+                                                    break;
+                                                } else {
+                                                    do {
+                                                        printf("\n-------- Menu --------");
+                                                        mostrarPratos(r1.cardapio);
+                                                        printf("\nDeseja fazer um pedido?");
+                                                        printf("\n0. Nao, desejo retornar.");
+                                                        printf("\n0. Sim, desejo pedir.");
+                                                        Opcao();
+                                                        scanf("%d", &opcli);
+                                                        switch (opcli) {
+                                                            case 0: //retorno a tela do cliente
+                                                                break;
+                                                            case 1: //pedido
+                                                                printf("\nDigite o codigo do prato: ");
+                                                                scanf("%d", &opcli);
+                                                                controle = buscaPrato(r1.cardapio, opcli, &p1);
+                                                                if (controle) {
+                                                                    printf("\nOpcao invalida, digite novamente.");
+                                                                    opcli = 2;
+                                                                    break;
+                                                                } else {
+                                                                    //funcao inserir pedido
+                                                                }
+                                                        }
+                                                        printf("\nPedir de novo?");
+                                                        printf("\n0. Nao, desejo retornar.");
+                                                        printf("\n1. Sim, desejo olhar os pratos novamente.");
+                                                        Opcao();
+                                                        scanf("%d", &opcli);
+                                                    } while (opcli);
+                                                }
+                                        }
+                                        printf("\nOlhar restaurantes novamente?");
+                                        printf("\n0. Nao, desejo retornar.");
+                                        printf("\n1. Sim, desejo olhar os restaurantes novamente.");
+                                        Opcao();
+                                        scanf("%d", &opcli);
+                                        system("cls");
+                                    } while(opcli);
+                                    break;
+                                    case 2:
+                                        //historico de pedidos
+                                    case 3:
+                                        //feedbacks
+                                    case 4:
+                                        printf("\n-------- Exclusao da conta --------");
+                                        printf("\n %s, deseja excluir sua conta?", c1.nome);
+                                        printf("\n0. Nao");
+                                        printf("\n1. Sim");
+                                        Opcao();
+                                        scanf("%d", &opcli);
+                                        while (opcli) {
+                                            printf("\nSenha necessaria para delecao de conta, digite-a: ");
+                                            scanf("%d", &senhaaux);
+                                            controle = ConfirmaSenha(senhaaux);
+                                            if (controle == 0) {
+                                                controle = removerCliente(lCli, c1);
+                                                if (controle) {
+                                                    system("cls");
+                                                    printf("\nErro na delecao.");
+                                                } else {
+                                                    opcli = 0;
+                                                    menucli2 = 0;
+                                                    system("cls");
+                                                    printf("\nConta excluida.");
+                                                }
+                                            } else {
+                                                printf("\nSenha incorreta.");
+                                            }
+                                        }
+                                        break;
+                                    default:
+                                        printf("\nOpcao invalida, digite novamente.");
+                                }
                             } while(menucli2);
+                            break;
                             //fim da funcionalidade com o cliente logado
+                            //registro do cliente
                         case 2:
                             system("cls");
                             printf("-------- Dados --------\n");
@@ -172,17 +338,17 @@ int main () {
                     }
                 } while (menucli1);
                 break;
-            case 2:
+            case 2: //tela do restaurante
                 do {
                     printf("\n\n-------- Area do prestador de servico --------");
                     printf("\n1. Login");
                     printf("\n2. Cadastre-se");
                     printf("\n0. Retornar");
-                    printf("\nDigite sua opcao abaixo: ");
+                    Opcao();
                     scanf("%d", &menurest1);
                     system("cls");
                     switch (menurest1) {
-                        case 0:
+                        case 0: //saida do menu do restaurante
                             break;
                         case 1: //login restaurante
                             printf("\nInsira o email: ");

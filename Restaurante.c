@@ -102,6 +102,23 @@ int buscaRest(ListaR *l, char *aux, Restaurante *rest) {
     *rest = no->item;
     return 0;
 }
+
+int achaRest(ListaR *l, int id, Restaurante *rest) {
+    if (l == NULL) return 2;
+    if (listaVaziaR(l) == 0) return 1;
+    NoR *no = (*l);
+    if (no == NULL) return 3;
+    while (no != NULL) {
+        if (no->item.identificacao != id) {
+            no = no->prox;
+        } else {
+            break;
+        }
+    }
+    *rest = no->item;
+    return 0;
+}
+
 int listaVaziaR(ListaR *l) {
     if (l == NULL) return 2;
     if ((*l) == NULL) return 0;
@@ -113,13 +130,13 @@ void mostrarR(ListaR *l, char *cat) {
         NoR *no = (*l);
         if (strcmp(cat, "Nao listado") == 0) {
             while (no != NULL) {
-                printf("\n- %s", no->item.nomeRest);
+                printf("\n- %d. %s", no->item.identificacao, no->item.nomeRest);
                 no = no->prox;
             }
         } else {
             while (no != NULL) {
                 if (strcmp(no->item.categoria, cat) == 0) {
-                    printf("\n- %s - %s", no->item.nomeRest, no->item.categoria);
+                    printf("\n- %d. %s - %s", no->item.identificacao, no->item.nomeRest, no->item.categoria);
                 }
                 no = no->prox;
             }

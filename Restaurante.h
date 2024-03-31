@@ -12,7 +12,7 @@ typedef struct restaurante{
     char CNPJ[19];
     char email[30];
     int senha;
-    int identificacao;
+    int identificacao; //pedir pro usuario registrar esse numero no registro do restaurante
     ListaP *cardapio;
     FilaPed *pedidos;
 }Restaurante;
@@ -26,6 +26,7 @@ int removerRest(ListaR *l, Restaurante rest); //feito
 int buscaEmailRest(ListaR *l, char *em); //feito
 int buscaItemRest(ListaR *l, char *it); //feito
 int buscaRest(ListaR *l, char *aux, Restaurante *rest); //feito
+int achaRest(ListaR *l, int id, Restaurante *rest); //feito
 
 int listaVaziaR(ListaR *l); //feito
 
