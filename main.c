@@ -110,8 +110,8 @@ int confirmaCPF(char *cpf) {
 
 int main () {
     int menuprincp, menucli1, menucli2, menurest1, menurest2;
-    int controle, senhaaux, opcli;
-    char auxcat[30], auxnomerest[30];
+    int controle, senhaaux, opcli, cod;
+    char auxcat[30];
     ListaC *lCli;
     ListaR *lRest;
     ListaP *lPrat;
@@ -194,7 +194,7 @@ int main () {
                                         printf("\n-------- Restaurantes disponiveis --------");
                                         mostrarR(lRest, auxcat);
                                         printf("\nDeseja olhar o cardapio de algum restaurante?");
-                                        printf("\n0. Não, desejo retornar ");
+                                        printf("\n0. Nao, desejo retornar ");
                                         printf("\n1. Sim, quero olhar");
                                         Opcao();
                                         scanf("%d", &opcli);
@@ -253,7 +253,7 @@ int main () {
                                         //historico de pedidos
                                     case 3:
                                         //feedbacks
-                                    case 4:
+                                    case 4: //excluir conta
                                         printf("\n-------- Exclusao da conta --------");
                                         printf("\n %s, deseja excluir sua conta?", c1.nome);
                                         printf("\n0. Nao");
@@ -351,7 +351,244 @@ int main () {
                         case 0: //saida do menu do restaurante
                             break;
                         case 1: //login restaurante
-                            printf("\nInsira o email: ");
+                            do {
+                                printf("\nInsira o email: ");
+                                setbuf(stdin, NULL);
+                                fgets(r1.email, 30, stdin);
+                                r1.email[strcspn(r1.email, "\n")] = '\0';
+                                controle = ConfirmaEmail(r1.email);
+                                if (controle) {
+                                    printf("\nEmail incorreto. Digite novamente.");
+                                } else if (buscaEmailRest(lRest, r1.email) != 0) {
+                                    controle = 1;
+                                    printf("\nEmail nao cadastrado. Digite novamente.");
+                                }
+                            } while(controle);
+                            buscaRest(lRest, r1.email, &r1);
+                            do {
+                                printf("\nInsira a senha: ");
+                                scanf("%d", &senhaaux);
+                                controle = ConfirmaSenha(senhaaux);
+                                if (controle) {
+                                    printf("\nSenha invalida. Tente novamente.");
+                                } else if (senhaaux != r1.senha) {
+                                    printf("\nSenha incorreta. Tente novamente.");
+                                    controle = 1;
+                                }
+                            } while(controle);
+                            system("cls");
+                            //inicio da funcionalidade com restaurante logado
+                            do { //menu de funcionalidades
+                                printf("\n\n-------- %s, bem vindo(a) --------", r1.nomeRest);
+                                printf("\n0. Retornar"); //feito
+                                printf("\n1. Ver meu cardapio"); //feito
+                                printf("\n2. Pedidos em minha loja");
+                                printf("\n3. Cadastrar prato"); //feito
+                                printf("\n4. Alteracao de prato"); //feito
+                                printf("\n5. Excluir prato"); //feito
+                                printf("\n6. Feedbacks da minha loja");
+                                printf("\n7. Excluir conta");
+                                Opcao();
+                                scanf("%d", &menurest2);
+                                system("cls");
+                                switch (menurest2) {
+                                    case 0: //retornar a tela principal
+                                        break;
+                                    case 1: //mostra cardapio
+                                        printf("\n-------- Meu cardapio --------");
+                                        mostrarPratos(r1.cardapio);
+                                        printf("\nVolte ao pressionar qualquer tecla.");
+                                        setbuf(stdin, NULL);
+                                        fgetc(stdin); //recebe qualquer caractere do teclado
+                                        system("cls");
+                                        break;
+                                    case 2: //fazer quando tiver fila pedidos
+                                        printf("-------- Pedidos da loja --------");
+                                    case 3: //cadastrar prato
+                                        printf("\n-------- Cadastro de prato --------");
+                                        printf("\nNome do prato: ");
+                                        setbuf(stdin, NULL);
+                                        fgets(p1.nome, 30, stdin);
+                                        p1.nome[strcspn(p1.nome, "\n")] = '\0';
+                                        printf("\nPreco do prato: ");
+                                        scanf("%f", &p1.preco);
+                                        printf("\nIngredientes do prato: ");
+                                        setbuf(stdin, NULL);
+                                        fgets(p1.ingredientes, 300, stdin);
+                                        p1.ingredientes[strcspn(p1.ingredientes, "\n")] = '\0';
+                                        printf("\nNumero de identificacao (inteiro): ");
+                                        scanf("%d", &p1.codigo);
+                                        controle = inserirPrato(lPrat, p1);
+                                        if (controle) {
+                                            system("cls");
+                                            printf("\nErro na insercao do prato.");
+                                        } else {
+                                            system("cls");
+                                            printf("\nPrato inserido.");
+                                        }
+                                        break;
+                                    case 4: //alterar prato
+                                        printf("\n-------- Alteracao de prato --------");
+                                        printf("\nDigite o codigo do prato: ");
+                                        scanf("%d", &cod);
+                                        controle = buscaPrato(lPrat, cod, &p1);
+                                        if (controle) {
+                                            printf("\nCodigo incorreto, digite novamente.");
+                                            break;
+                                        }
+                                        do {
+                                            printf("\nNome: %s", p1.nome);
+                                            printf("\nAlterar nome?");
+                                            printf("\n0. Nao");
+                                            printf("\n1. Sim");
+                                            Opcao();
+                                            scanf("%d", &opcli);
+                                            switch (opcli) {
+                                                case 0:
+                                                    break;
+                                                case 1:
+                                                    printf("\nNovo nome: ");
+                                                    setbuf(stdin, NULL);
+                                                    fgets(p1.nome, 30, stdin);
+                                                    p1.nome[strcspn(p1.nome, "\n")] = '\0';
+                                                    break;
+                                                default:
+                                                    printf("\nOpcao invalida. Tente novamente.");
+                                            }
+                                        } while(opcli != 1 && opcli != 0);
+                                        do {
+                                            printf("\nPreco: %2.f", p1.preco);
+                                            printf("\nAlterar preco?");
+                                            printf("\n0. Nao");
+                                            printf("\n1. Sim");
+                                            Opcao();
+                                            scanf("%d", &opcli);
+                                            switch (opcli) {
+                                                case 0:
+                                                    break;
+                                                case 1:
+                                                    printf("\nNovo preco: ");
+                                                    scanf("%f", &p1.preco);
+                                                    break;
+                                                default:
+                                                    printf("\nOpcao invalida. Tente novamente.");
+                                            }
+                                        } while(opcli != 1 && opcli != 0);
+                                        do {
+                                            printf("\nIngredientes: %s", p1.ingredientes);
+                                            printf("\nAlterar ingredientes?");
+                                            printf("\n0. Nao");
+                                            printf("\n1. Sim");
+                                            Opcao();
+                                            scanf("%d", &opcli);
+                                            switch (opcli) {
+                                                case 0:
+                                                    break;
+                                                case 1:
+                                                    printf("\nNovos ingredientes: ");
+                                                    setbuf(stdin, NULL);
+                                                    fgets(p1.ingredientes, 300, stdin);
+                                                    p1.nome[strcspn(p1.nome, "\n")] = '\0';
+                                                    break;
+                                                default:
+                                                    printf("\nOpcao invalida. Tente novamente.");
+                                            }
+                                        } while(opcli != 1 && opcli != 0);
+                                        do {
+                                            printf("\nCodigo: %d", p1.codigo);
+                                            printf("\nAlterar codigo?");
+                                            printf("\n0. Nao");
+                                            printf("\n1. Sim");
+                                            Opcao();
+                                            scanf("%d", &opcli);
+                                            switch (opcli) {
+                                                case 0:
+                                                    break;
+                                                case 1:
+                                                    printf("\nNovo codigo: ");
+                                                    scanf("%d", &p1.codigo);
+                                                    break;
+                                                default:
+                                                    printf("\nOpcao invalida. Tente novamente.");
+                                            }
+                                        } while(opcli != 1 && opcli != 0);
+                                        controle = removerPrato(r1.cardapio,p1);
+                                        if (controle) {
+                                            system("cls");
+                                            printf("\nErro na modificacao do prato.");
+                                        } else {
+                                            controle = inserirPrato(r1.cardapio, p1);
+                                            if (controle) {
+                                                system("cls");
+                                                printf("\nErro na modificacao do prato.");
+                                            } else {
+                                                system("cls");
+                                                printf("\nPrato alterado.");
+                                            }
+                                        }
+                                        break;
+                                    case 5:
+                                        printf("\n-------- Exclusao de pratos --------");
+                                        printf("\nDigite o codigo do prato: ");
+                                        scanf("%d", &cod);
+                                        controle = buscaPrato(r1.cardapio, cod, &p1);
+                                        if (controle) {
+                                            printf("\nPrato nao encontrado. Codigo invalido.");
+                                            break;
+                                        }
+                                        printf("\nDeseja excluir o prato %s?", p1.nome);
+                                        printf("\n0. Nao");
+                                        printf("\n1. Sim");
+                                        Opcao();
+                                        scanf("%d", &opcli);
+                                        while (opcli) {
+                                            controle = removerPrato(r1.cardapio, p1);
+                                            if (controle) {
+                                                system("cls");
+                                                printf("\nErro ao remover prato.");
+                                            } else {
+                                                opcli = 0;
+                                                system("cls");
+                                                printf("\nPrato excluido.");
+                                            }
+                                        }
+                                        break;
+                                    case 6: //fazer parte de feedbacks
+                                        printf("\n");
+                                    case 7:
+                                        printf("\n-------- Exclusao de conta de prestador de servico --------");
+                                        printf("\nDeseja excluir sua conta, %s?", r1.nomeRest);
+                                        printf("\n0. Nao");
+                                        printf("\n1. Sim");
+                                        Opcao();
+                                        scanf("%d", &opcli);
+                                        while (opcli) {
+                                            printf("\nSenha necessaria para exclusao. Digite-a: ");
+                                            scanf("%d", &senhaaux);
+                                            if (senhaaux == r1.senha) {
+                                                controle = removerRest(lRest, r1);
+                                                if (controle) {
+                                                    system("cls");
+                                                    printf("\nErro na delecao da conta.");
+                                                } else {
+                                                    opcli = 0;
+                                                    menurest2 = 0;
+                                                    system("cls");
+                                                    printf("\nConta excluida.");
+                                                }
+                                            } else {
+                                                system("cls");
+                                                printf("\nSenha incorreta. Digite novamente.");
+                                            }
+                                        }
+                                        break;
+                                    default:
+                                        printf("\nOpcao invalida. Digite novamente.");
+                                }
+                            } while(menurest2);
+                            break; //fim das funcionalidades com restaurante logado
+                        case 2: //registro do restaurante
+                            printf("\n");
                     }
                 } while(menurest1);
         }
