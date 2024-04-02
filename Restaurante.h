@@ -11,7 +11,6 @@ typedef struct restaurante{
     char categoria[30];
     char CNPJ[19];
     char email[30];
-    char feedback[100]; //cliente registra em um restaurante
     char senha[10];
     int identificacao;
     ListaP *cardapio;
@@ -21,7 +20,6 @@ typedef struct restaurante{
 ListaR *criarRest();
 
 int inserirRest(ListaR *l, Restaurante rest);
-
 int removerRest(ListaR *l, Restaurante rest);
 
 int buscaEmailRest(ListaR *l, char *em);
@@ -37,5 +35,5 @@ void mostrarPratosRest(ListaR *l);
 
 void liberarmemoriaR(ListaR *l);
 
-int tamanhoR (ListaR *l);
+int tamanhoR(ListaR *l);
 #endif //EVA00_RESTAURANTE_H

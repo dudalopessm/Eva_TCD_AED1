@@ -2,6 +2,7 @@
 #include "Restaurante.h"
 #include "Pratos.h"
 #include "Pedidos.h"
+#include "Feedbacks.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,7 +32,6 @@ void Opcao() { //sempre que for pedir opcao
 void Restaurantes(char *auxcat) {
     int op;
     do {
-        Opcao();
         printf("\n1. Comida japonesa");
         printf("\n2. Comida brasileira");
         printf("\n3. Pizzas");
@@ -94,7 +94,7 @@ int ConfirmaSenha(char *s) {
 }
 
 int ConfirmaEmail(char *email) { //confirma se email tem @ e já existe na lista
-    int comp, auxarroba = 0, auxponto = 0, i;
+    int auxarroba = 0, auxponto = 0, i;
     for (i = 0; email[i] != '\0'; i++) {
         if (email[i] == '@') {
             auxarroba++;
@@ -112,8 +112,8 @@ int ConfirmaCPF(char *cpf) {
     for (i = 0; cpf[i] != '\0'; i++) {
         tam++;
     }
-    if (cpf[11] != '-') return 1;
-    if (cpf[3] != '.' || cpf[7] != '.') return 1;
+    //if (cpf[11] != '-') return 1;
+    //if (cpf[3] != '.' || cpf[7] != '.') return 1;
     if(tam<14) return 1;
     return 0;
 }
@@ -129,19 +129,28 @@ int ConfirmaCNPJ(char *cnpj) {
     return 0;
 }
 
+int ConfirmaId(int id) {
+    return 0;
+} //COMPLETAR ESSA FUNCAO DE ALGUM JEITO - MUDAR ID PARA CHAR?
+
 int main () {
     int menuprincp, menucli1, menucli2, menurest1, menurest2;
-    int controle, opcli, cod;
+    int controle, opcli, cod, opfeed;
     char auxcat[30], auxsenha[10];
     ListaC *lCli;
     ListaR *lRest;
     ListaP *lPrat;
+    ListaF *lFeed;
+    FilaPed *fPed; //TA DANDO PROBLEMA NO TAD DA FILA - CRIAR OUTRO PROJETO? TO FAZENDO ERRADO? PENSAR ALGUM JEITO
     lCli = criarCliente();
     lRest = criarRest();
     lPrat = criarP();
+    lFeed = criarF();
     Cliente c1;
     Restaurante r1;
     Pratos p1;
+    Feedback f1;
+    Feedback f2 = {"0", "Nenhuma avaliacao ate o momento.", lCli, lRest, fPed};
     do
     {
         //inicio do programa
@@ -156,6 +165,8 @@ int main () {
                 Fim();
                 liberarmemoriaC(lCli);
                 liberarmemoriaR(lRest);
+                liberarmemoriaP(lPrat);
+                liberarmemoriaF(lFeed);
                 break;
             case 1: //parte do cliente
                 do {
@@ -171,7 +182,7 @@ int main () {
                             break;
                         case 1: //tela de login do cliente
                             do {
-                                printf("\nInsira seu email:");
+                                printf("\nInsira seu email: ");
                                 setbuf(stdin, NULL);
                                 fgets(c1.email, 50, stdin);
                                 c1.email[strcspn(c1.email, "\n")] = '\0';
@@ -203,7 +214,7 @@ int main () {
                                 printf("\n0. Retornar");
                                 printf("\n1. Opcoes de restaurantes");
                                 printf("\n2. Historico de pedidos"); //FAZER QUANDO FILA DE PEDIDOS ESTIVER PRONTA
-                                printf("\n3. Feedbacks"); //fazer com os meninos
+                                printf("\n3. Feedbacks");
                                 printf("\n4. Excluir conta");
                                 Opcao();
                                 scanf("%d", &menucli2);
@@ -273,9 +284,46 @@ int main () {
                                     } while(opcli);
                                     break;
                                     case 2:
-                                        //historico de pedidos
-                                    case 3:
-                                        //feedbacks
+                                        //historico de pedidos e feedbacks de pedidos
+                                    case 3: //feedbacks
+                                        system("cls");
+                                        printf("\n-------- Feedbacks dos estabelecimentos --------");
+                                        printf("\nEscolha a categoria do restaurante que deseja consultar ou dar feedbacks.");
+                                        Restaurantes(auxcat);
+                                        printf("\nDeseja olhar a pagina de feedbacks ou avaliar algum restaurante?");
+                                        printf("\n0. Nao, desejo retornar");
+                                        printf("\n1. Olhar feedbacks");
+                                        printf("\n2. Fazer um feedback");
+                                        Opcao();
+                                        scanf("%d", &opfeed);
+                                        switch (opfeed) {
+                                            case 0:
+                                                break;
+                                            case 1:
+                                                system("cls");
+                                                printf("\n-------- Restaurantes disponiveis --------");
+                                                mostrarR(lRest, auxcat);
+                                                printf("\nDigite o numero da identificacao do restaurante: ");
+                                                scanf("%d", &opcli);
+                                                controle = achaRest(lRest, opcli, &r1);
+                                                if (controle) {
+                                                    printf("\nCodigo incorreto, digite novamente.");
+                                                    opcli = 2;
+                                                    break;
+                                                } else {
+                                                    do { //mostrar feedbacks do restaurante escolhido
+                                                        //TA DANDO ERRO -> TA FECHANDO O PROGRAMA -> PENSAR EM JEITO PARA RETORNAR AO MENU PRINCIPAL
+                                                        system("cls");
+                                                        printf("\n-------- Feedbacks --------");
+                                                        mostrarFeedRest(lFeed, f1);
+                                                        printf("\nVolte ao pressionar qualquer tecla.");
+                                                        setbuf(stdin, NULL);
+                                                        fgetc(stdin); //recebe qualquer caractere do teclado
+                                                        system("cls");
+                                                        menucli2 = 0;
+                                                    } while(opcli);
+                                                }
+                                        }
                                     case 4: //excluir conta
                                         printf("\n-------- Exclusao da conta --------");
                                         printf("\n %s, deseja excluir sua conta?", c1.nome);
@@ -321,8 +369,9 @@ int main () {
                             do {
                                 printf("\nFormato do CPF: XXX.XXX.XXX-XX");
                                 printf("\nDigite seu CPF: ");
-                                setbuf(stdin, NULL);
-                                fgets(c1.cpf, 12, stdin);
+                                fflush(stdin);
+                                fgets(c1.cpf, 15, stdin);
+                                c1.cpf[strcspn(c1.cpf, "\n")] = '\0';
                                 controle = ConfirmaCPF(c1.cpf);
                                 if (controle) {
                                     printf("\nCPF invalido, tente novamente.");
@@ -332,9 +381,11 @@ int main () {
                                 }
                             } while(controle);
                             do {
-                                printf("\nInsira seu email:");
-                                setbuf(stdin, NULL);
+                                //TA APARECENDO COMO SE EU TIVESSE DIGITADO O EMAIL E TIVESSE DADO ERRADO
+                                printf("\nInsira seu email: ");
+                                fflush(stdin);
                                 fgets(c1.email, 50, stdin);
+                                controle = ConfirmaEmail(c1.email);
                                 c1.email[strcspn(c1.email, "\n")] = '\0';
                                 if (controle) {
                                     printf("\nEmail invalido, tente novamente.");
@@ -413,7 +464,7 @@ int main () {
                                 printf("\n3. Cadastrar prato");
                                 printf("\n4. Alteracao de prato");
                                 printf("\n5. Excluir prato");
-                                printf("\n6. Feedbacks da minha loja"); //fazer em conjunto c meninos
+                                printf("\n6. Feedbacks da minha loja");
                                 printf("\n7. Excluir conta");
                                 Opcao();
                                 scanf("%d", &menurest2);
@@ -422,10 +473,11 @@ int main () {
                                     case 0: //retornar a tela principal
                                         break;
                                     case 1: //mostra cardapio
+                                    // TA DANDO ERRO, PENSAR EM OUTRO JEITO DE VOLTAR AO MENU PRINCIPAL SEM QUE ENCERRE O PROGRAMA
                                         printf("\n-------- Meu cardapio --------");
                                         mostrarPratos(r1.cardapio);
                                         printf("\nVolte ao pressionar qualquer tecla.");
-                                        setbuf(stdin, NULL);
+                                        fflush(stdin);
                                         fgetc(stdin); //recebe qualquer caractere do teclado
                                         system("cls");
                                         break;
@@ -619,7 +671,7 @@ int main () {
                             printf("\n-------- Registro de restaurante --------");
                             printf("\nNome do restaurante: ");
                             setbuf(stdin, NULL);
-                            fgets(r1.nomeRest, 30, stdin);
+                            fgets(r1.nomeRest, 29, stdin);
                             r1.nomeRest[strcspn(r1.nomeRest, "\n")] = '\0';
                             do{
                                 printf("\nFormato de digitacao do CNPJ: XX.XXX.XXX/XXXX-XX");
@@ -636,13 +688,14 @@ int main () {
                             } while(controle);
                             do {
                                 printf("\nEmail: ");
-                                setbuf(stdin, NULL);
+                                // TA DANDO ERRO - TA APARECENDO COMO SE EU TIVESSE DIGITADO ALGUM EMAIL ANTES
+                                fflush(stdin);
                                 fgets(r1.email, 30, stdin);
                                 controle = ConfirmaEmail(r1.email);
                                 r1.email[strcspn(r1.email, "\n")] = '\0';
                                 if (controle) {
                                     printf("\nEmail invalido. Tente novamente.");
-                                } else if (buscaEmailRest(lRest, r1.email)) {
+                                } else if (buscaEmailRest(lRest, r1.email) == 0) {
                                     controle = 1;
                                     printf("\nEmail ja existente. Tente novamente.");
                                 }
@@ -650,10 +703,10 @@ int main () {
                             do {
                                 printf("\nIdentificacao: ");
                                 scanf("%d", &r1.identificacao);
-                                controle = achaRestId(lRest, r1.identificacao);
+                                controle = ConfirmaId(r1.identificacao);
                                 if (controle) {
                                     printf("\nIdentificacao invalida. Tente novamente.");
-                                } else if(controle == 0) {
+                                } else if(achaRestId(lRest, r1.identificacao) == 0) {
                                     controle = 1;
                                     printf("\nIdentificacao ja pertence a outro restaurante. Tente novamente.");
                                 }
@@ -667,11 +720,13 @@ int main () {
                                     printf("\nSenha invalida. Tente novamente.");
                                 }
                             } while(controle);
+                            printf("\nEscolha qual categoria se enquadra no seu restaurante: ");
                             Restaurantes(auxcat);
                             strcpy(r1.categoria, auxcat);
                             controle = inserirRest(lRest, r1);
                             system("cls");
                             if (controle == 0) {
+                                inserirFeed(lFeed, f2); //insere feedback padrao de 0 feedbacks
                                 printf("\nRestaurante cadastrado.");
                             } else {
                                 printf("\nErro ao inserir restaurante.");

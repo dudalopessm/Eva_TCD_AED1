@@ -17,10 +17,8 @@ struct cliente {
 ListaC *criarCliente();
 
 int inserirCliente(ListaC *l, Cliente cli);
-
 int removerInicioC(ListaC *l);
 int removerCliente(ListaC *l, Cliente cli);
-int removerPosicaoC (ListaC *l, int pos);
 
 int buscaEmailCliente(ListaC *l, char *em);
 int buscaCliente(ListaC *l, char *em, Cliente *cli);

@@ -18,7 +18,7 @@ ListaC *criarCliente() {
     return l;
 }
 
-void liberarmemoriaC(ListaC *l) { //talvez nao seja necessaria?
+void liberarmemoriaC(ListaC *l) {
     if (l != NULL) {
         NoC *atual = (*l);
         while (atual != NULL) {
@@ -110,13 +110,12 @@ int listaVaziaC(ListaC *l) {
 
 void mostrarC(ListaC *l) {
     if (l != NULL) {
-        printf("[");
         NoC *noLista = (*l);
         while (noLista != NULL) {
-            printf(" {%s}",noLista->item.nome);
+            noLista->item.nome[strcspn(noLista->item.nome, "\n")] = '\0';
+            printf("\n >> %s <<", noLista->item.nome);
             noLista = noLista->prox;
         }
-        printf("]");
     }
 }
 
