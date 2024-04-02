@@ -109,14 +109,17 @@ int buscaFeedPed(ListaF *l, Feedback it) {
 void mostrarFeedRest(ListaF *l, Feedback it) {
     if (l != NULL) {
         NoF *noLista = (*l);
-        printf("\n////");
+        printf("\n-------------------------------------------------------------");
         while (noLista != NULL) {
             mostrarC(noLista->item.cliente);
-            printf("\n>>>>> %s estrelas", noLista->item.estrelas);
+            printf("\n");
+            printf("\n %s estrelas", noLista->item.estrelas);
+            printf("\n");
             printf("\n %s", noLista->item.avaliacao);
+            printf("\n");
             noLista = noLista->prox;
         }
-        printf("\n////");
+        printf("\n-------------------------------------------------------------");
     }
 }
 

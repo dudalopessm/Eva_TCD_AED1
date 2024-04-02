@@ -3,7 +3,8 @@
 #include "Cliente.h"
 #include "Restaurante.h"
 #include "Pratos.h"
-#include "Pedidos.h"
+#include "FilaPedidos.h"
+#include "Feedbacks.h"
 typedef struct noR* ListaR;
 typedef struct restaurante Restaurante;
 typedef struct restaurante{
@@ -14,7 +15,8 @@ typedef struct restaurante{
     char senha[10];
     int identificacao;
     ListaP *cardapio;
-    FilaPed *pedidos;
+    Fila *pedidos;
+    ListaF *feedback;
 }Restaurante;
 
 ListaR *criarRest();

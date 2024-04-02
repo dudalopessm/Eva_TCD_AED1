@@ -8,8 +8,8 @@
 typedef struct noF* ListaF;
 typedef struct feedback Feedback;
 typedef struct feedback {
-    char estrelas[6];
-    char avaliacao[300];
+    char estrelas[2]; //cliente avalia estabelecimento ou pedido de 0 a 5 estrelas
+    char avaliacao[300]; //cliente escreve avaliacao
     ListaC *cliente;
     ListaR *restaurante;
     FilaPed *pedidos;

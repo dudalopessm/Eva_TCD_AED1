@@ -113,7 +113,8 @@ void mostrarC(ListaC *l) {
         NoC *noLista = (*l);
         while (noLista != NULL) {
             noLista->item.nome[strcspn(noLista->item.nome, "\n")] = '\0';
-            printf("\n >> %s <<", noLista->item.nome);
+            printf("\n Usuario: %s", noLista->item.nome);
+            printf("\n");
             noLista = noLista->prox;
         }
     }
