@@ -4,7 +4,7 @@
 #include "Feedback.h"
 #include "Prato.h"
 #include "Clientes.h"
-typedef struct noR* ListaR;
+typedef struct listaR ListaR;
 typedef struct restaurante Restaurante;
 typedef struct restaurante{
     char nomeRest[30];
@@ -15,13 +15,14 @@ typedef struct restaurante{
     int identificacao;
     ListaP *cardapio;
     Fila *pedidos;
-    //ListaF *feedback;
 }Restaurante;
 
 ListaR *criarRest();
 
 int inserirRest(ListaR *l, Restaurante rest);
 int removerRest(ListaR *l, Restaurante rest);
+
+int geracaoCod(ListaR *l);
 
 int buscaEmailRest(ListaR *l, char *em);
 int buscaItemRest(ListaR *l, char *it);
@@ -34,5 +35,4 @@ int listaVaziaR(ListaR *l);
 
 void mostrarR(ListaR *l, char *cat);
 void mostrarPratosRest(ListaR *l);
-//consertado, uma funcao incluida e funcoes removidas
 #endif //EVA_RESTAURANTES_H

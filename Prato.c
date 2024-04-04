@@ -100,6 +100,21 @@ int buscaPrato(ListaP *l, int cod, Pratos *it) {
     return 0;
 }
 
+int achaPratoId(ListaP *l, int id){
+    if (l == NULL) return 1;
+    if (listaVaziaP(l) == 0) return 2;
+    NoP *no = (*l);
+    if (no == NULL) return 4;
+    while (no != NULL) {
+        if (no->item.codigo != id) {
+            no = no->prox;
+        } else {
+            return 0;
+        }
+    }
+    return 3;
+}
+
 int listaVaziaP(ListaP *l) {
     if (l == NULL) return 2;
     if ((*l) == NULL) return 0;
@@ -111,7 +126,7 @@ void mostrarPratos(ListaP *l) {
         NoP *no = (*l);
         while (no != NULL) {
             printf("\n");
-            printf("\n---- Prato (%d) ----", no->item.codigo);
+            printf("\nPrato (%d)", no->item.codigo);
             printf("\nNome: %s", no->item.nome);
             printf("\nIngredientes: %s", no->item.ingredientes);
             printf("\nPreco: %.2f reais", no->item.preco);
