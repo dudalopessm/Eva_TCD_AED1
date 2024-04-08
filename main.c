@@ -129,7 +129,7 @@ int ConfirmaCNPJ(char *cnpj) {
     return 0;
 }
 
-/*int ConfirmaEstrelas(char *est) {
+int ConfirmaEstrelas(char *est) {
     int i, tam = 0, num = 0;
     for (i = 0; est[i] != '\0'; i++) {
         if (est[i] >= '0' && est[i] <= '5') num++; //deve ser um numero obrigatoriamente entre 0 e 5
@@ -137,18 +137,20 @@ int ConfirmaCNPJ(char *cnpj) {
     }
     if ((num = 1) && (tam = 1)) return 0; //avaliacao deve ser dada
     return 1;
-} feedback em prod*/ 
+}
 
 int main () {
     int menuprincp, menucli1, menucli2, menurest1, menurest2;
-    int controle, opcli, cod, ret, quantidade, opc;
-    char auxcat[30], auxsenha[10];
+    int controle, opcli, cod, ret, quantidade, opc, op;
+    char auxcat[30], auxsenha[10], auxfeed[300];
     ListaC *lCli;
     ListaR *lRest;
     ListaP *lPr;
+    ListaF *lFeed;
     lCli = criarCliente();
     lRest = criarRest();
     lPr = criarP();
+    lFeed = criarF();
     Cliente c1;
     Cliente c2 = {"123.123.123-12", "Administrador", "admin@email.com", "admin123"}; //usuario para teste em prod
     controle = inserirCliente(lCli, c2); //usuario para teste em prod
@@ -156,6 +158,7 @@ int main () {
     Restaurante r2 = {"Japaroll", "Comida japonesa", "12.345.678/0003-00", "admin@email.com", "admin123", 11, NULL, NULL}; //usuario para teste em prod
     controle = inserirRest(lRest, r2); //usuario para teste em prod
     Pratos p1;
+    Feedback feed1;
     do
     {
         //inicio do programa
@@ -450,7 +453,133 @@ int main () {
                                         system("cls");
                                         break;
                                     case 4: //feedbacks
-                                        printf("\nFuncao feedbacks em desenvolvimento.");
+                                        do {
+                                        printf("\n-------- Pagina de Feedbacks --------");
+                                        printf("\nDeseja avaliar (opcao 1) ou olhar feedbacks ja existentes (opcao 2)?");
+                                        printf("\n0. Retornar ao menu inicial");
+                                        printf("\n1. Desejo avaliar um pedido");
+                                        printf("\n2.Olhar feedbacks ja existentes");
+                                        Opcao();
+                                        scanf("%d", &opc);
+                                        switch (opc) {
+                                            case 0:
+                                                break;
+                                            case 1:
+                                                printf("\n-------- Meus pedidos  --------");
+                                                mostrarPCliente(c1.entregues);
+                                                printf("\nQual pedido deseja avaliar? Digite o codigo do pedido.");
+                                                fflush(stdin);
+                                                scanf("%d", &cod);
+                                                controle = buscaItemPrato(c1.entregues, cod);
+                                                if (controle == 0) {
+                                                    system("cls");
+                                                    printf("\n-------- Avaliacao do pedido de codigo %d --------", cod);
+                                                    do {
+                                                    printf("\nDigite quantas estrelas deseja dar ao pedido (0 a 5), em decimais: ");
+                                                    fflush(stdin);
+                                                    fgets(auxsenha, 2, stdin);
+                                                    fflush(stdin);
+                                                    auxsenha[strcspn(auxsenha, "\n")] = '\0';
+                                                    ret = ConfirmaEstrelas(auxsenha);
+                                                    if (ret == 0) {
+                                                        printf("\nClassificacao registrada. Prosseguindo...");
+                                                    } else {
+                                                        printf("\nClassificacao incorreta. Tente novamente.");
+                                                        ret = 1;
+                                                    }
+                                                } while(ret);
+                                                    printf("\nDigite uma avaliacao para o pedido, com maximo de 300 caracteres: ");
+                                                    fflush(stdin);
+                                                    fgets(auxfeed, 300, stdin);
+                                                    fflush(stdin);
+                                                    auxfeed[strcspn(auxfeed, "\n")] = '\0';
+                                                    feed1.user = c1;
+                                                    feed1.alvo = r1;
+                                                    ret = inserirFeed(lFeed, feed1);
+                                                    if (ret == 0) {
+                                                        opc = 0;
+                                                        system("cls");
+                                                        printf("\nFeedback registrado.");
+                                                    } else {
+                                                        printf("\nErro ao registrar feedback.");
+                                                        controle = 1;
+                                                    }
+                                                } else {
+                                                    controle = 1;
+                                                    system("cls");
+                                                    printf("\nPedido inexistente ou nao entregue ainda. Tente novamente.");
+                                                }
+                                                break;
+                                            case 2:
+                                                printf("\n-------- Feedbacks  --------");
+                                                printf("\nO que deseja olhar?");
+                                                printf("\n0. Retornar");
+                                                printf("\n1. Meus feedbacks");
+                                                printf("\n2. Olhar feedbacks de algum restaurante");
+                                                Opcao();
+                                                scanf("%d", &op);
+                                                switch(op) {
+                                                    case 0:
+                                                        break;
+                                                    case 1:
+                                                        system("cls");
+                                                        printf("\n-------- Meus feedbacks registrados --------");
+                                                        mostrarFeedCli(lFeed);
+                                                        printf("\nPressione qualquer tecla para retornar.");
+                                                        fflush(stdin);
+                                                        getc(stdin);
+                                                        fflush(stdin);
+                                                        system("cls");
+                                                        break;
+                                                    case 2:
+                                                        system("cls");
+                                                        printf("\n-------- Feedbacks --------");
+                                                        printf("\nDe qual estabelecimento deseja olhar os feedbacks?");
+                                                        Restaurantes(auxcat);
+                                                        printf("\n-------- Restaurantes disponiveis --------");
+                                                        mostrarR(lRest, auxcat);
+                                                        printf("\nDeseja ver os feedbacks de algum restaurante?");
+                                                        printf("\n0. Nao, desejo retornar ");
+                                                        printf("\n1. Sim, quero olhar");
+                                                        Opcao();
+                                                        scanf("%d", &opcli);
+                                                        switch (opcli) {
+                                                            case 0:
+                                                                break;
+                                                            case 1:
+                                                                printf("\nDigite o numero da identificacao do restaurante: ");
+                                                                Opcao();
+                                                                scanf("%d", &opcli);
+                                                                ret = achaRest(lRest, opcli, &r1);
+                                                                if (ret) {
+                                                                    printf("\nCodigo incorreto. Tente novamente.");
+                                                                    opcli = 1;
+                                                                    break;
+                                                                } else {
+                                                                    system("cls");
+                                                                    printf("\n-------- Feedbacks --------");
+                                                                    mostrarFeedTodos(lFeed);
+                                                                    printf("\n------------------------");
+                                                                    printf("\n");
+                                                                    printf("\nPressione qualquer tecla para retornar.");
+                                                                    fflush(stdin);
+                                                                    getc(stdin);
+                                                                    fflush(stdin);
+                                                                    system("cls");
+                                                                    break;      
+                                                                }
+                                                                break;
+                                                            default: 
+                                                                printf("\nOpcao invalida. Tente novamente.");
+                                                                break;
+                                                        }
+                                                }
+                                                break;
+                                            default:
+                                                printf("\nOpcao invalida. Tente novamente.");
+                                                break;
+                                        }
+                                        } while(opc);
                                         break;
                                     case 5: //excluir conta
                                         printf("\n-------- Exclusao da conta --------");

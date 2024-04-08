@@ -6,27 +6,26 @@
 typedef struct noF* ListaF;
 typedef struct feedback Feedback;
 typedef struct feedback {
+    Cliente user;
+    Restaurante alvo;
     char estrelas[2]; //cliente avalia estabelecimento ou pedido de 0 a 5 estrelas
     char avaliacao[300]; //cliente escreve avaliacao
-    ListaC *cliente;
-    //ListaR *restaurante;
-    Fila  *pedidos;
+    ListaR *restavaliados; //restaurantes avaliados pelo usuario
+    ListaP *pedentregues; //vou avaliar o pedido, a avaliacao vai para o restaurante e fica disponivel para visualizacao para o cliente e o proprietario
 }Feedback;
 
 ListaF *criarF();
 
+int tamanhoF(ListaF *l);
+
 int inserirFeed(ListaF *l, Feedback it);
 int removerFeed(ListaF *l, Feedback it);
 
-int buscaFeedRest(ListaF *l, Feedback it);
-int buscaFeedPed(ListaF *l, Feedback it);
+int achaFeed(ListaF *l, int id, Feedback *it);
 
 int listaVaziaF(ListaF *l);
 
-void mostrarFeedRest(ListaF *l, Feedback it);
-void mostrarFeedPed(ListaF *l, Feedback it); //PENDENTE
-
-int tamanhoF(ListaF *l);
-
-void liberarmemoriaF(ListaF *l);
+void mostrarFeedRest(ListaF *l);
+void mostrarFeedCli(ListaF *l);
+void mostrarFeedTodos(ListaF *l);
 #endif //EVA_FEEDBACK_H

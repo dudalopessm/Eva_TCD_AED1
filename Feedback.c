@@ -1,5 +1,7 @@
 #include "Feedback.h"
 #include "Clientes.h"
+#include "Prato.h"
+#include "Restaurantes.h"
 #include <stdio.h>
 #include <stdlib.h>
 typedef struct noF {
@@ -13,18 +15,6 @@ ListaF *criarF() {
     ListaF *l = (ListaF*)malloc(sizeof(ListaF));
     (*l) = NULL;
     return l;
-}
-
-void liberarmemoriaF(ListaF *l) {
-    if (l != NULL) {
-        NoF *atual = (*l);
-        while (atual != NULL) {
-            NoF *prox = atual->prox;
-            free(atual);
-            atual = prox;
-        }
-        free(l);
-    }
 }
 
 int listaVaziaF(ListaF *l) {
@@ -50,6 +40,8 @@ int inserirFeed(ListaF *l, Feedback it) {
     NoF *no = (NoF*)malloc(sizeof(NoF));
     if (no == NULL) return 1;
     no->item = it;
+    if (no->item.pedentregues == NULL) no->item.pedentregues = criarP(); //verificar se ta criando a lista se tiver dando erro
+    if (no->item.restavaliados == NULL) no->item.restavaliados = criarRest();
     no->prox = (*l);
     (*l) = no;
     return 0;
@@ -61,7 +53,7 @@ int removerFeed(ListaF *l, Feedback it) {
     NoF *ant;
     NoF *no = (*l);
     if (no == NULL) return 3;
-    while (no != NULL && no->item.cliente != it.cliente) {
+    while (no != NULL && no->item.pedentregues != it.pedentregues) {
         ant = no;
         no = no->prox;
     }
@@ -74,49 +66,74 @@ int removerFeed(ListaF *l, Feedback it) {
     return 0;
 }
 
-/*int buscaFeedRest(ListaF *l, Feedback it) {
-    if (l == NULL) return 2;
-    if (listaVaziaF(l) == 0) return 3;
-    NoF *noLista = (*l);
-    while (noLista != NULL) {
-        if (noLista->item.restaurante != it.restaurante) {
-            noLista = noLista->prox;
+int achaFeed(ListaF *l, int id, Feedback *it) {
+    if (l == NULL) return 1;
+    if(listaVaziaF(l) == 0) return 2;
+    NoF *no = (*l);
+    while (no != NULL) {
+        if (no->item.alvo.identificacao != id) {
+            no = no->prox;
         } else {
-            return 0;
+            break;
         }
     }
-    return 1;
+    *it = no->item;
+    return 0;
 }
 
-int buscaFeedPed(ListaF *l, Feedback it) {
-    if (l == NULL) return 2;
-    if (listaVaziaF(l) == 0) return 3;
-    NoF *noLista = (*l);
-    while (noLista != NULL) {
-        if (noLista->item.pedidos != it.pedidos) {
-            noLista = noLista->prox;
-        } else {
-            return 0;
-        }
-    }
-    return 1;
-}*/
-
-void mostrarFeedRest(ListaF *l, Feedback it) {
+void mostrarFeedRest(ListaF *l) {
     if (l != NULL) {
-        NoF *noLista = (*l);
-        printf("\n-------------------------------------------------------------");
-        while (noLista != NULL) {
-            mostrarC(noLista->item.cliente);
-            printf("\n");
-            printf("\n %s estrelas", noLista->item.estrelas);
-            printf("\n");
-            printf("\n %s", noLista->item.avaliacao);
-            printf("\n");
-            noLista = noLista->prox;
-        }
-        printf("\n-------------------------------------------------------------");
+    NoF *noLista = (*l);
+    printf("\n");
+    while (noLista != NULL) {
+        noLista->item.avaliacao[strcspn(noLista->item.avaliacao,"\n")] = '\0';
+        noLista->item.estrelas[strcspn(noLista->item.estrelas,"\n")] = '\0';
+        noLista->item.user.nome[strcspn(noLista->item.user.nome,"\n")] = '\0';
+        printf("\nUsuario: %s", noLista->item.user.nome);
+        printf("\nEstrelas: %s", noLista->item.estrelas);
+        printf("\nAvaliacao: %s", noLista->item.avaliacao);
+        printf("\n");
+        noLista = noLista->prox;
+    }
+    printf("\n");
     }
 }
 
-void mostrarFeedPed(ListaF *l, Feedback it); //DEPENDE DO TAD FILA PEDIDOS
+void mostrarFeedCli(ListaF *l) {
+    if (l != NULL) {
+    NoF *noLista = (*l);
+    printf("\n");
+    while (noLista != NULL) {
+        noLista->item.avaliacao[strcspn(noLista->item.avaliacao,"\n")] = '\0';
+        noLista->item.estrelas[strcspn(noLista->item.estrelas,"\n")] = '\0';
+        noLista->item.alvo.nomeRest[strcspn(noLista->item.alvo.nomeRest,"\n")] = '\0';
+        printf("\nCodigo do pedido: %d", noLista->item.pedentregues);
+        printf("\nRestaurante: %s", noLista->item.alvo.nomeRest);
+        printf("\nEstrelas: %s", noLista->item.estrelas);
+        printf("\nAvaliacao: %s", noLista->item.avaliacao);
+        printf("\n");
+        noLista = noLista->prox;
+    }
+    printf("\n");
+    }
+}
+
+void mostrarFeedTodos(ListaF *l) {
+    if (l != NULL) {
+    NoF *noLista = (*l);
+    printf("\n");
+    while (noLista != NULL) {
+        noLista->item.avaliacao[strcspn(noLista->item.avaliacao,"\n")] = '\0';
+        noLista->item.estrelas[strcspn(noLista->item.estrelas,"\n")] = '\0';
+        noLista->item.alvo.nomeRest[strcspn(noLista->item.alvo.nomeRest,"\n")] = '\0';
+        noLista->item.user.nome[strcspn(noLista->item.user.nome,"\n")] = '\0';
+        printf("\nUsuario: %s", noLista->item.user.nome);
+        printf("\nRestaurante: %s", noLista->item.alvo.nomeRest);
+        printf("\nEstrelas: %s", noLista->item.estrelas);
+        printf("\nAvaliacao: %s", noLista->item.avaliacao);
+        printf("\n");
+        noLista = noLista->prox;
+    }
+    printf("\n");
+    }
+}

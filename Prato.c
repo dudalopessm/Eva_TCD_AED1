@@ -142,7 +142,7 @@ void mostrarPCliente(ListaP *l) {
             printf("\n");
             printf("\n-------------------------");
             printf("\nPrato: %s", no->item.nome);
-            printf("\nCodigo do prato: %d", no->item.codigo);
+            printf("\nCodigo do pedido: %d", no->item.codigo);
             printf("\nPreco: %.2f reais", no->item.preco);
             printf("\nQuantidade: %d", no->item.quantidade);
             no = no->prox;

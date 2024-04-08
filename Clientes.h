@@ -2,6 +2,7 @@
 #define EVA_CLIENTES_H
 #include "Clientes.h"
 #include "Prato.h"
+#include "Feedback.h"
 typedef struct noC* ListaC;
 typedef struct cliente Cliente;
 struct cliente {
@@ -12,6 +13,7 @@ struct cliente {
     ListaP *carrinho;
     ListaP *pedidos;
     ListaP *entregues;
+    ListaF *feedbacks;
 };
 
 ListaC *criarCliente();
