@@ -1,5 +1,4 @@
 #include "Clientes.h"
-#include "Prato.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -21,6 +20,9 @@ int inserirCliente(ListaC *l, Cliente cli) {
     NoC *no = (NoC*)malloc(sizeof(NoC));
     if (no == NULL) return 1;
     no->item = cli;
+    no->item.carrinho = criarP();
+    no->item.pedidos = criarP();
+    no->item.entregues = criarP();
     no->prox = (*l);
     (*l) = no;
     return 0;

@@ -1,8 +1,6 @@
-#ifndef EVA_CLIENTES_H
-#define EVA_CLIENTES_H
-#include "Clientes.h"
-#include "Prato.h"
-#include "Feedback.h"
+#ifndef TCDD_CLIENTES_H
+#define TCDD_CLIENTES_H
+#include "Pratos.h"
 typedef struct noC* ListaC;
 typedef struct cliente Cliente;
 struct cliente {
@@ -13,20 +11,18 @@ struct cliente {
     ListaP *carrinho;
     ListaP *pedidos;
     ListaP *entregues;
-    ListaF *feedbacks;
 };
 
-ListaC *criarCliente();
+ListaC *criarCliente(); //criacao da lista
 
-int inserirCliente(ListaC *l, Cliente cli);
-int removerCliente(ListaC *l, Cliente cli);
+int inserirCliente(ListaC *l, Cliente cli); //insercao de elemento
+int removerCliente(ListaC *l, Cliente cli); //remocao de elemento
 
-int buscaEmailCliente(ListaC *l, char *em);
-int buscaCliente(ListaC *l, char *em, Cliente *cli);
-int procuraCliente(ListaC *l, char *aux);
+int buscaEmailCliente(ListaC *l, char *em); //busca por email retornando apenas inteiro
+int buscaCliente(ListaC *l, char *em, Cliente *cli); //busca por email retornando o cliente em um item
+int procuraCliente(ListaC *l, char *aux); //busca por cpf retornando apenas inteiro
 
-int listaVaziaC(ListaC *l);
+int listaVaziaC(ListaC *l); //verifica status da lista
 
-void mostrarC(ListaC *l);
-//diminui tamanho do tad, acrescentei ListaP pedidos na struct
-#endif //EVA_CLIENTES_H
+void mostrarC(ListaC *l); //mostra clientes
+#endif //TCDD_CLIENTES_H

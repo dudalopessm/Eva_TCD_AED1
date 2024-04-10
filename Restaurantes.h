@@ -1,9 +1,7 @@
-#ifndef EVA_RESTAURANTES_H
-#define EVA_RESTAURANTES_H
-#include "Pedido.h"
-#include "Feedback.h"
-#include "Prato.h"
-#include "Clientes.h"
+#ifndef TCDD_RESTAURANTES_H
+#define TCDD_RESTAURANTES_H
+#include "Pratos.h"
+#include "Pedidos.h"
 typedef struct listaR ListaR;
 typedef struct restaurante Restaurante;
 typedef struct restaurante{
@@ -17,22 +15,22 @@ typedef struct restaurante{
     Fila *pedidos;
 }Restaurante;
 
-ListaR *criarRest();
+ListaR *criarRest(); //criação da lista
 
-int inserirRest(ListaR *l, Restaurante rest);
-int removerRest(ListaR *l, Restaurante rest);
+int inserirRest(ListaR *l, Restaurante rest); //inserção de elemento
+int removerRest(ListaR *l, Restaurante rest); //remoção de elemento
 
-int geracaoCod(ListaR *l);
+int geracaoCod(ListaR *l); //gera um codigo para o item
 
-int buscaEmailRest(ListaR *l, char *em);
-int buscaItemRest(ListaR *l, char *it);
-int buscaRest(ListaR *l, char *aux, Restaurante *rest);
-int achaRest(ListaR *l, int id, Restaurante *rest);
-int achaRestId(ListaR *l, int id);
-int acharPrato(ListaR *l, int cod, Restaurante *rest);
+int buscaEmailRest(ListaR *l, char *em); //busca restaurante baseado no email retornando um inteiro
+int buscaItemRest(ListaR *l, char *it); //busca restaurante baseado no CNPJ retornando um inteiro
+int buscaRest(ListaR *l, char *aux, Restaurante *rest); //busca restaurante baseado no email retornando um inteiro e um item
+int achaRest(ListaR *l, int id, Restaurante *rest); //busca restaurante baseado na sua identificacao (codigo) retornando um inteiro e um item
+int achaRestId(ListaR *l, int id); //busca restaurante baseado na sua identificacao (codigo) retornando um inteiro
+int acharPrato(ListaR *l, int cod, Restaurante *rest); //verifica se o prato existe no restaurante em questão
 
-int listaVaziaR(ListaR *l);
+int listaVaziaR(ListaR *l); //verifica status da lista
 
-void mostrarR(ListaR *l, char *cat);
-void mostrarPratosRest(ListaR *l);
-#endif //EVA_RESTAURANTES_H
+void mostrarR(ListaR *l, char *cat); //mostra os restaurantes por categoria
+void mostrarPratosRest(ListaR *l); //mostra o cardapio do restaurante
+#endif //TCDD_RESTAURANTES_H

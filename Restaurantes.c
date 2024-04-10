@@ -1,5 +1,4 @@
 #include "Restaurantes.h"
-#include "Prato.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,7 +11,7 @@ typedef struct noR {
 typedef struct listaR {
     NoR *inicio;
     int codrest;
-    int codprato; 
+    int codprato;
 }ListaR;
 
 ListaR *criarRest() {
@@ -79,7 +78,7 @@ int buscaEmailRest(ListaR *l, char *em) {
         }
     }
     return 3;
-} 
+}
 
 int buscaItemRest(ListaR *l, char *it) {
     if (l == NULL) return 2;
@@ -93,7 +92,7 @@ int buscaItemRest(ListaR *l, char *it) {
         }
     }
     return 1;
-} 
+}
 
 int buscaRest(ListaR *l, char *aux, Restaurante *rest) {
     if (l == NULL) return 2;
@@ -109,7 +108,7 @@ int buscaRest(ListaR *l, char *aux, Restaurante *rest) {
     }
     *rest = no->item;
     return 0;
-} 
+}
 
 int achaRest(ListaR *l, int id, Restaurante *rest) {
     if (l == NULL) return 2;
@@ -125,7 +124,7 @@ int achaRest(ListaR *l, int id, Restaurante *rest) {
     }
     *rest = no->item;
     return 0;
-} 
+}
 
 int achaRestId(ListaR *l, int id) {
     if (l == NULL) return 1;
@@ -140,7 +139,7 @@ int achaRestId(ListaR *l, int id) {
         }
     }
     return 3;
-} 
+}
 
 int acharPrato(ListaR *l, int cod, Restaurante *rest) {
     if (l == NULL) return 1;
@@ -155,7 +154,7 @@ int acharPrato(ListaR *l, int cod, Restaurante *rest) {
     }
     *rest = no->item;
     return 0;
-} 
+}
 
 int listaVaziaR(ListaR *l) {
     if (l == NULL) return 2;
