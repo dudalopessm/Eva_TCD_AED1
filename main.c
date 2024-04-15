@@ -227,7 +227,7 @@ int main () {
                                 printf("\n0. Retornar");
                                 printf("\n1. Faca seu pedido!");
                                 printf("\n2. Pagamento e finalizacao de pedidos");
-                                printf("\n3. Historico de pedidos entregues");
+                                printf("\n3. Confirmacao de pedidos");
                                 printf("\n4. Feedbacks");
                                 printf("\n5. Excluir conta");
                                 Opcao();
@@ -393,6 +393,7 @@ int main () {
                                                     printf("\nOpcao invalida. Tente novamente.");
                                             }
                                         }
+                                        pag = 0;
                                         printf("\nPressione qualquer tecla para voltar.");
                                         fflush(stdin);
                                         getc(stdin);
@@ -454,6 +455,16 @@ int main () {
                                                     system("cls");
                                                     printf("\nOpcao invalida. Tente novamente.");
                                             }
+                                        }
+                                        while (auxx == 0) {
+                                            printf("\n-------- Pedidos entregues  --------");
+                                            mostrarPCliente(c1.entregues); //mostra pedidos que ja foram entregues
+                                            printf("\nPressione qualquer tecla para retornar.");
+                                            fflush(stdin);
+                                            getc(stdin);
+                                            fflush(stdin);
+                                            system("cls");
+                                            break;
                                         }
                                         system("cls");
                                         break;
